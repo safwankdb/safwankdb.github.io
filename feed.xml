@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-12-22T21:39:54+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">MOHD SAFWAN</title><subtitle>This is me in HTML</subtitle><author><name>Mohd Safwan</name></author><entry><title type="html">Hello World</title><link href="http://localhost:4000/2019/07/01/hello-hydeout.html" rel="alternate" type="text/html" title="Hello World" /><published>2019-07-01T00:00:00+05:30</published><updated>2019-07-01T00:00:00+05:30</updated><id>http://localhost:4000/2019/07/01/hello-hydeout</id><content type="html" xml:base="http://localhost:4000/2019/07/01/hello-hydeout.html">&lt;blockquote&gt;
+  &lt;p&gt;“Become antifragile or die” - Taleb Nassim&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
+
+&lt;p&gt;I am Mohd Safwan, an undergraduate student at IIT Bombay, and a Computer Vision Engineer at &lt;a href=&quot;https://augle.ai&quot;&gt;Augle AI&lt;/a&gt;. My interests are Deep Learning and Computer Vision. I love taking long walks and even longer naps. Reach out to me at &lt;a href=&quot;mailto:safwaniitb@gmail.com&quot;&gt;safwaniitb@gmail.com&lt;/a&gt;. Know more about me &lt;a href=&quot;./about&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;projects&quot;&gt;Projects&lt;/h2&gt;
+
+&lt;p&gt;Projects are good things, perhaps the best of things. In my experience, no good project ever gets completed. Here is a non-exhaustive &lt;a href=&quot;./projects&quot;&gt;list of projects&lt;/a&gt; I own or have contributed to. Apart from this, have a look at &lt;a href=&quot;https://safwankdb@github.io&quot;&gt;my GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;blog&quot;&gt;Blog&lt;/h2&gt;
+
+&lt;p&gt;This is my blog where I try to summarize my thoughts about all kinds of things. Having started recently, I will try to write more often.&lt;/p&gt;</content><author><name>Mohd Safwan</name></author><summary type="html">“Become antifragile or die” - Taleb Nassim Who am I? I am Mohd Safwan, an undergraduate student at IIT Bombay, and a Computer Vision Engineer at Augle AI. My interests are Deep Learning and Computer Vision. I love taking long walks and even longer naps. Reach out to me at safwaniitb@gmail.com. Know more about me here. Projects Projects are good things, perhaps the best of things. In my experience, no good project ever gets completed. Here is a non-exhaustive list of projects I own or have contributed to. Apart from this, have a look at my GitHub. Blog This is my blog where I try to summarize my thoughts about all kinds of things. Having started recently, I will try to write more often.</summary></entry></feed>
