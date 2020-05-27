@@ -248,13 +248,13 @@
     g(u) = |u|^2
 \end{align}</p>
 
-<p>We will start from a blank image a update its values via gradient descent to minimize our objective <script type="math/tex">f</script>.</p>
+<p>We will start from a blank image a update its values via gradient descent to minimize our objective <script type="math/tex">f</script>. Here <script type="math/tex">x_{i_1},x_{i_2},x_{i_3},x_{i_4}</script> are surrounding pixels of <script type="math/tex">{x_i}</script>.</p>
 
 <p>\begin{align}
     f(x, y) = \sum_{i} [ a(x_i-y_i)^2 + \sum_{n=1}^{4} g(x_i-x_{i_n})]
 \end{align}</p>
 
-<p>Instead of calculating gradients make, we take advantage of PyTorch’s autograd.</p>
+<p>Instead of calculating gradients manually, we take advantage of PyTorch’s autograd.</p>
 
 <h2 id="implementation">Implementation</h2>
 <p>The code for this project is available in this <a href="https://colab.research.google.com/drive/1UEZMA21NyezMhlLdfEFGYJVwtLTZGtxV">Colab Notebook</a> and will soon be on GitHub.</p>

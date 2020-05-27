@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-21T03:01:54+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">MOHD SAFWAN</title><subtitle>This is me in HTML</subtitle><author><name>Mohd Safwan</name></author><entry><title type="html">Image Denoising with Markov Random Fields</title><link href="http://localhost:4000/2020/04/20/mrf_denoising.html" rel="alternate" type="text/html" title="Image Denoising with Markov Random Fields" /><published>2020-04-20T00:00:00+05:30</published><updated>2020-04-20T00:00:00+05:30</updated><id>http://localhost:4000/2020/04/20/mrf_denoising</id><content type="html" xml:base="http://localhost:4000/2020/04/20/mrf_denoising.html">&lt;p&gt;I found this problem as an assignment in WnCC IITB’s excellent initiative &lt;a href=&quot;https://github.com/wncc/CodeInQuarantine&quot;&gt;CodeInQuarantine&lt;/a&gt;, do give it a look.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-27T16:48:22+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">MOHD SAFWAN</title><subtitle>This is me in HTML</subtitle><author><name>Mohd Safwan</name></author><entry><title type="html">Image Denoising with Markov Random Fields</title><link href="http://localhost:4000/2020/04/20/mrf_denoising.html" rel="alternate" type="text/html" title="Image Denoising with Markov Random Fields" /><published>2020-04-20T00:00:00+05:30</published><updated>2020-04-20T00:00:00+05:30</updated><id>http://localhost:4000/2020/04/20/mrf_denoising</id><content type="html" xml:base="http://localhost:4000/2020/04/20/mrf_denoising.html">&lt;p&gt;I found this problem as an assignment in WnCC IITB’s excellent initiative &lt;a href=&quot;https://github.com/wncc/CodeInQuarantine&quot;&gt;CodeInQuarantine&lt;/a&gt;, do give it a look.&lt;/p&gt;
 
 &lt;div align=&quot;center&quot;&gt;
    &lt;img src=&quot;/assets/img/mrf_denoising/progress.gif&quot; alt=&quot;progress&quot; align=&quot;center&quot; width=&quot;400&quot; /&gt;
@@ -11,13 +11,13 @@
     g(u) = |u|^2
 \end{align}&lt;/p&gt;
 
-&lt;p&gt;We will start from a blank image a update its values via gradient descent to minimize our objective &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt;.&lt;/p&gt;
+&lt;p&gt;We will start from a blank image a update its values via gradient descent to minimize our objective &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt;. Here &lt;script type=&quot;math/tex&quot;&gt;x_{i_1},x_{i_2},x_{i_3},x_{i_4}&lt;/script&gt; are surrounding pixels of &lt;script type=&quot;math/tex&quot;&gt;{x_i}&lt;/script&gt;.&lt;/p&gt;
 
 &lt;p&gt;\begin{align}
     f(x, y) = \sum_{i} [ a(x_i-y_i)^2 + \sum_{n=1}^{4} g(x_i-x_{i_n})]
 \end{align}&lt;/p&gt;
 
-&lt;p&gt;Instead of calculating gradients make, we take advantage of PyTorch’s autograd.&lt;/p&gt;
+&lt;p&gt;Instead of calculating gradients manually, we take advantage of PyTorch’s autograd.&lt;/p&gt;
 
 &lt;h2 id=&quot;implementation&quot;&gt;Implementation&lt;/h2&gt;
 &lt;p&gt;The code for this project is available in this &lt;a href=&quot;https://colab.research.google.com/drive/1UEZMA21NyezMhlLdfEFGYJVwtLTZGtxV&quot;&gt;Colab Notebook&lt;/a&gt; and will soon be on GitHub.&lt;/p&gt;
@@ -106,7 +106,8 @@ RRMSE Final  : 0.1274341344833374
    &lt;img src=&quot;/assets/img/harris/chess.png&quot; alt=&quot;Test Image&quot; align=&quot;center&quot; width=&quot;500&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;The full project code is available at &lt;a href=&quot;https://github.com/safwankdb/Harris-Corner-Python&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;source-code&quot;&gt;Source Code&lt;/h2&gt;
+&lt;p&gt;The full project code is available at &lt;a href=&quot;https://github.com/safwankdb/Harris-Corner-Python&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&quot;image-derivatives&quot;&gt;Image Derivatives&lt;/h3&gt;
 &lt;p&gt;We’ve used Sobel operators of aperture 3 to compute &lt;script type=&quot;math/tex&quot;&gt;I_x&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;I_y&lt;/script&gt; . Since the Sobel operators are seperable filters (have rank 1), we have used the optimised algorithm for calculating the derivatives. We define the following function to filter an image $I$ with a seperable filter whose factors are filter_y&lt;script type=&quot;math/tex&quot;&gt;_{(1×3)}&lt;/script&gt; and filter_x&lt;script type=&quot;math/tex&quot;&gt;_{(3×1)}&lt;/script&gt;&lt;/p&gt;
