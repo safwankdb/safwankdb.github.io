@@ -323,7 +323,7 @@ Disassembly of section .text:
  804820c:	<span class="nb">cd </span>80                	int    <span class="nv">$0x80</span>
 </code></pre></div></div>
 
-<p>Notice that there are 7 ` ` ` fcos ` `  ` ops in the assembly, which is basically an inplace cosine operation. The floating point instructions like `  ` ` fcos, fldl, fstpl… ` ` ` belong to the <a href="https://www.wikiwand.com/en/X87">x87 instruction set</a>. Also, the binary takes a command line argument and returns a string of fixed length (96).</p>
+<p>Notice that there are 7 <code class="language-html highlighter-rouge">fcos</code> ops in the assembly, which is basically an inplace cosine operation. The floating point instructions like <code class="language-html highlighter-rouge">fcos, fldl, fstpl...</code> belong to the <a href="https://www.wikiwand.com/en/X87">x87 instruction set</a>. Also, the binary takes a command line argument and returns a string of fixed length (96).</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>./trig gibberish
 cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagldjonbebnfffbfbae
@@ -335,7 +335,7 @@ cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagl
 
 <p>We’ll explore a different route. We noticed that output stops changing when length of input argument exceeds 32 characters. Also, shifting the argument by a factor of 4 seems to shift some output chars in the opposite direction.</p>
 
-<p>With some trials, we figure out that, an input string ` ` ` ABCDEFGH ` `  ` (A, B, . . represent a block of 4 characters) is mapped to `  ` ` f(H)f(G)f(F)f(E)f(C)f(B)f(A)p(D) ` ` `. Here, <script type="math/tex">f(X) \neq  p(X)</script> and output of both is 12 characters in length.</p>
+<p>With some trials, we figure out that, an input string <code class="language-html highlighter-rouge">ABCDEFGH</code> (A, B, . . represent a block of 4 characters) is mapped to <code class="language-html highlighter-rouge">f(H)f(G)f(F)f(E)f(C)f(B)f(A)p(D)</code>. Here, <script type="math/tex">f(X) \neq  p(X)</script> and output of both is 12 characters in length.</p>
 
 <p>This leads us to the conclusion that if we can just find out the mappings <script type="math/tex">f, p</script> and invert them, we get the flag.</p>
 
@@ -344,21 +344,22 @@ cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagl
 <p>First, we need a wordlist, so we generate one.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">permutations</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="n">charset</span> <span class="o">=</span> <span class="s">"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?@_"</span> <span class="o">+</span> <span class="s">'{'</span> <span class="o">+</span> <span class="s">'}'</span>
-<span class="n">perms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="n">charset</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'words.txt'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">perms</span><span class="p">))):</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">perms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'wordlist.txt'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">charset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
 
 </code></pre></div></div>
 
-<p>There are 19545240 words, this’ll take some time.</p>
+<p>There are 21381376 words, this’ll take some time.</p>
 
-<p>Second, we need to find the output for each of these words and check for a match in our given output. In 1 call to the executable, we can get outputs for 7 4-char blocks. Running the binary from C++ or Python is easy, but if you also read stdout, it costs time. So, I just write the output in a new file for reading it later because I couldn’t find the C++ way to read stdout without the slow ` ` ` Popen() ` ` `.</p>
+<p>Second, we need to find the output for each of these words and check for a match in our given output. In 1 call to the executable, we can get outputs for 7 4-char blocks. Running the binary from C++ or Python is easy, but if you also read stdout, it costs time. So, I just write the output in a new file for reading it later because I couldn’t find the C++ way to read stdout without the slow <code class="language-html highlighter-rouge">Popen()</code>.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="cp">#include &lt;bits/stdc++.h&gt;
 </span>
@@ -440,7 +441,7 @@ Template: ggggffffeeeexxxxddddccccbbbbaaaa
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>python3 match.py 
 100%|██████████████████████████████████| 2792177/2792177 <span class="o">[</span>00:08&amp;lt<span class="p">;</span>00:00, 313834.23it/s]
-Csec<span class="o">{</span>H0pu_l34rn3d_R1ght<span class="o">}</span>
+CsecIITB<span class="o">{</span>H0pu_l34rn3d_R1ght<span class="o">}</span>
 </code></pre></div></div>
 
 <p>But, this is not the flag. That’s because we only found the mapping <script type="math/tex">f</script>. Finding <script type="math/tex">p</script> would have taken 7 times longer. We know we are missing a 4-char block, we know the position too. We can make some educated guesses for the missing block, it’s not that hard.</p>
