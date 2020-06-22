@@ -41,6 +41,7 @@
     href="/feed.xml" />
 
   <!-- Additional head bits without overriding original head -->
+<link href="/css/monokai.css" rel="stylesheet">
 </head>
 
   <body class="post">
@@ -275,7 +276,7 @@
 
 <p>Let’s start writing code</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
@@ -285,7 +286,7 @@
 
 <p>Define our objective function</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">mrf_prior</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">mrf_prior</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="k">def</span> <span class="nf">mrf_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
@@ -298,7 +299,7 @@
 
 <p>We’ll start with a completely black image.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">to_tensor</span> <span class="o">=</span> <span class="n">ToTensor</span><span class="p">()</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="n">to_tensor</span> <span class="o">=</span> <span class="n">ToTensor</span><span class="p">()</span>
 <span class="n">RRMSE</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(((</span><span class="n">gt</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">gt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">sum</span><span class="p">())</span><span class="o">**</span><span class="mf">0.5</span>
 <span class="n">noisy</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noise_level_high.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">gt</span>    <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noiseless.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
@@ -313,7 +314,7 @@
 </code></pre></div></div>
 <p>Writing the optimization loop.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_it</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_it</span><span class="p">):</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">mrf_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
@@ -323,11 +324,11 @@
     <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">X</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
 </code></pre></div></div>
 
-<p>The last line just stores our image as a numpy array in a lost so we can convert it to a GIF using <code class="highlighter-rouge">imageio</code> library.</p>
+<p>The last line just stores our image as a numpy array in a lost so we can convert it to a GIF using <code class="language-html highlighter-rouge">imageio</code> library.</p>
 
 <h2 id="result">Result</h2>
 <p>We compare both images using Relative Root Mean Squared Error.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RRMSE Initial: 0.15553350746631622
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="syntax"><code>RRMSE Initial: 0.15553350746631622
 RRMSE Final  : 0.1274341344833374
 </code></pre></div></div>
 <div align="center">
@@ -386,6 +387,15 @@ RRMSE Final  : 0.1274341344833374
   <section class="related">
   <h2>Related Posts</h2>
   <ul class="posts-list">
+    
+      <li>
+        <h3>
+          <a href="/2020/06/22/trig-writeup.html">
+            CsecCTF IITB Writeup: I hate Assembly
+            <small>22 Jun 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>

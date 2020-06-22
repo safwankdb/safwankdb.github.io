@@ -41,6 +41,7 @@
     href="/feed.xml" />
 
   <!-- Additional head bits without overriding original head -->
+<link href="/css/monokai.css" rel="stylesheet">
 </head>
 
   <body class="post">
@@ -252,7 +253,7 @@
 <h3 id="image-derivatives">Image Derivatives</h3>
 <p>We’ve used Sobel operators of aperture 3 to compute <script type="math/tex">I_x</script> and <script type="math/tex">I_y</script> . Since the Sobel operators are seperable filters (have rank 1), we have used the optimised algorithm for calculating the derivatives. We define the following function to filter an image $I$ with a seperable filter whose factors are filter_y<script type="math/tex">_{(1×3)}</script> and filter_x<script type="math/tex">_{(3×1)}</script></p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">seperable_conv</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">filter_x</span><span class="p">,</span> <span class="n">filter_y</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">seperable_conv</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">filter_x</span><span class="p">,</span> <span class="n">filter_y</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">filter_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span>
     <span class="n">I_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -269,7 +270,7 @@
 
 <p>Now, for Sobel derivatives, we just take the filters as <script type="math/tex">[−1, 0, 1] , [1, 2, 1]^T</script> and vice-versa.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">sobel_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">sobel_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -279,7 +280,7 @@
 </code></pre></div></div>
 <p>We now apply gaussian blur to smoothen the image. Since gaussian filter is  also seperable, we take advantage of this fact and use the above function.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">gaussian_mask</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">gaussian_mask</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.8</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -304,7 +305,7 @@
 
 <p>Using the smoothened derivatives <script type="math/tex">I_x, I_y</script>, we calculate the structure tensor <script type="math/tex">A</script> at every pixel.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="n">D_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
     <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">I_x</span><span class="p">)</span>
@@ -330,7 +331,7 @@ Let,</p>
     \lambda_{1,2} =  \frac{a+d}{2}\pm\frac{\sqrt{(a-d)^2+4bc}}{2}
 \end{align}</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">Q</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -356,6 +357,28 @@ Let,</p>
 
 
 <div class="post-tags">
+  
+    
+    <a href="/tags.html#image-processing">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">image-processing,</span>
+    </a>
+  
+    
+    <a href="/tags.html#python">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">python</span>
+    </a>
   
 </div>
   </div>
@@ -401,6 +424,15 @@ Let,</p>
   <section class="related">
   <h2>Related Posts</h2>
   <ul class="posts-list">
+    
+      <li>
+        <h3>
+          <a href="/2020/06/22/trig-writeup.html">
+            CsecCTF IITB Writeup: I hate Assembly
+            <small>22 Jun 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
