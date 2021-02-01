@@ -1,4 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-12T22:30:47+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">MOHD SAFWAN</title><subtitle>This is me in HTML</subtitle><author><name>Mohd Safwan</name></author><entry><title type="html">CsecCTF IITB Writeup: I hate Assembly</title><link href="http://localhost:4000/2020/06/22/trig-writeup.html" rel="alternate" type="text/html" title="CsecCTF IITB Writeup: I hate Assembly" /><published>2020-06-22T00:00:00+05:30</published><updated>2020-06-22T00:00:00+05:30</updated><id>http://localhost:4000/2020/06/22/trig-writeup</id><content type="html" xml:base="http://localhost:4000/2020/06/22/trig-writeup.html">&lt;p&gt;The CyberSecurity Club IITB conducts an yearly &lt;a href=&quot;https://ctf.cseciitb.in/&quot;&gt;CsecCTF&lt;/a&gt;. This was also my first CTF. There were many interesting questions but the one we were not able to solve until the final moments was &lt;strong&gt;trig&lt;/strong&gt;. Luckily, we were able to hack a solution in the final few hours and won the whole thing (Go team lolwamen!!).&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-02-01T17:45:58+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">MOHD SAFWAN</title><subtitle>This is me in HTML</subtitle><author><name>Mohd Safwan</name></author><entry><title type="html">Content-Aware Image Resizing with Julia</title><link href="http://localhost:4000/2021/02/01/seam-carving.html" rel="alternate" type="text/html" title="Content-Aware Image Resizing with Julia" /><published>2021-02-01T00:00:00+05:30</published><updated>2021-02-01T00:00:00+05:30</updated><id>http://localhost:4000/2021/02/01/seam-carving</id><content type="html" xml:base="http://localhost:4000/2021/02/01/seam-carving.html">&lt;p&gt;I am going to implement the basic &lt;strong&gt;Seam Carving&lt;/strong&gt; algorithm in &lt;strong&gt;Julia&lt;/strong&gt;. This method shows the usefulness of dynamic programming.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;using Images, ImageFiltering
+
+download&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://upload.wikimedia.org/wikipedia/commons/c/cb/Broadway_tower_edit.jpg&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;test.jpg&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div align=&quot;center&quot;&gt;
+   &lt;img src=&quot;/assets/img/seam_carving/1.png&quot; align=&quot;center&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Use Sobel filters to compute the gradient of the image.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;get_energy&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	∇y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; luminance.&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;imfilter&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img, Kernel.sobel&lt;span class=&quot;o&quot;&gt;()[&lt;/span&gt;1]&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+	∇x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; luminance.&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;imfilter&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img, Kernel.sobel&lt;span class=&quot;o&quot;&gt;()[&lt;/span&gt;2]&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+	energy &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; sqrt.&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;∇x.^2 + ∇y.^2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+end&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div align=&quot;center&quot;&gt;
+   &lt;img src=&quot;/assets/img/seam_carving/2.png&quot; align=&quot;center&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Next, the algorithm uses dynamic programming to find the vertical seam line with the least energy.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;get_min_cost&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;energy&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	min_cost &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; copy&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;energy&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	
+	h, w &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; size&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;energy&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;h-1:-1:1, j &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1:w
+		&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;j &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 1
+			min_cost[i,j] +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; minimum&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i+1,1:2]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		elseif j &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; w
+			min_cost[i,j] +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; minimum&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i+1,w-1:w]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;else
+			&lt;/span&gt;min_cost[i,j] +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; minimum&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i+1,j-1:j+1]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		end
+	end
+	&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;min_cost
+end&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Next, we use the precomputed values to find the required seam line by traversing down from the minima on the top row. At each step, choose the neighbor with the least cost.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;get_seam&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	h,w &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; size&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	min_idx &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; argmin&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[1,:]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	indices &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;min_idx]
+	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2:h
+		&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;min_idx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1
+			min_idx +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; argmin&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i,1:2]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - 1
+		elseif &lt;span class=&quot;nv&quot;&gt;min_idx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;w
+			min_idx +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; argmin&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i,w-1:w]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - 2
+		&lt;span class=&quot;k&quot;&gt;else
+			&lt;/span&gt;min_idx +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; argmin&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;min_cost[i,min_idx-1:min_idx+1]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - 2
+		end
+		push!&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;indices, min_idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	end
+	&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;indices
+end&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div align=&quot;center&quot;&gt;
+   &lt;img src=&quot;/assets/img/seam_carving/3.png&quot; align=&quot;center&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The cost function has triangular artifacts as expected since a high energy value would propagate up in such contours.&lt;/p&gt;
+
+&lt;p&gt;Now we remove the seam pixels and ‘stick’ the parts.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;cut_seam&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img, seam&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	new_img &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; img[:,1:end-1]
+	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1:size&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;o&quot;&gt;)[&lt;/span&gt;1]
+		j &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; seam[i]
+		new_img[i,j:end] &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; img[i,j+1:end]
+	end
+	new_img
+end&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Finally, we can achieve resizing by just repeating the above steps iteratively.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;syntax&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;shrink_width&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img, n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	new_img &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; copy&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1:n
+		E &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; get_energy&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;new_img&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		cost &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; get_min_cost&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;E&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		seam &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; get_seam&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;cost&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		new_img &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; cut_seam&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;new_img, seam&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	end
+	new_img
+end&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+new_img &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; shrink_width&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;img, 200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div align=&quot;center&quot;&gt;
+   &lt;img src=&quot;/assets/img/seam_carving/4.png&quot; align=&quot;center&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The results speak for themselves! I would be updating this post soon with detailed descriptions of intermediate steps.&lt;/p&gt;</content><author><name>Mohd Safwan</name></author><category term="image-processing," /><category term="julia," /><category term="dynamic-programming" /><summary type="html">Implementing the basic Seam Carving algorithm in Julia.</summary></entry><entry><title type="html">CsecCTF IITB Writeup: I hate Assembly</title><link href="http://localhost:4000/2020/06/22/trig-writeup.html" rel="alternate" type="text/html" title="CsecCTF IITB Writeup: I hate Assembly" /><published>2020-06-22T00:00:00+05:30</published><updated>2020-06-22T00:00:00+05:30</updated><id>http://localhost:4000/2020/06/22/trig-writeup</id><content type="html" xml:base="http://localhost:4000/2020/06/22/trig-writeup.html">&lt;p&gt;The CyberSecurity Club IITB conducts an yearly &lt;a href=&quot;https://ctf.cseciitb.in/&quot;&gt;CsecCTF&lt;/a&gt;. This was also my first CTF. There were many interesting questions but the one we were not able to solve until the final moments was &lt;strong&gt;trig&lt;/strong&gt;. Luckily, we were able to hack a solution in the final few hours and won the whole thing (Go team lolwamen!!).&lt;/p&gt;
 
 &lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
 

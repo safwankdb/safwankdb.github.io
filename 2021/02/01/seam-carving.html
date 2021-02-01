@@ -18,7 +18,7 @@
 
   <title>
     
-    Flappy Bird but Harder &middot; MOHD SAFWAN
+    Content-Aware Image Resizing with Julia &middot; MOHD SAFWAN
     
   </title>
 
@@ -233,11 +233,11 @@
 
     <main class="container">
       <header>
-  <h1 class="post-title">Flappy Bird but Harder</h1>
+  <h1 class="post-title">Content-Aware Image Resizing with Julia</h1>
 </header>
 <div class="content">
   <div class="post-meta">
-  <span class="post-date"></span>
+  <span class="post-date">01 Feb 2021</span>
   <span class="post-categories">
     
   </span>
@@ -245,17 +245,102 @@
 
 
   <div class="post-body">
-    <canvas id="canvas" width="512" height="512"></canvas>
-<script src="/flappy/flappyBird.js"></script>
+    <p>I am going to implement the basic <strong>Seam Carving</strong> algorithm in <strong>Julia</strong>. This method shows the usefulness of dynamic programming.</p>
 
-<p><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code>using Images, ImageFiltering
 
-<ul>
-  <li>Press <strong>Space Bar</strong> to pause.</li>
-  <li>Avoid touching the pipes.</li>
-  <li>Don’t worry, it gets harder as you play :)</li>
-  <li><a href="https://github.com/safwankdb/Flappy-Bird-but-Harder">Source Code</a></li>
-</ul>
+download<span class="o">(</span><span class="s2">"https://upload.wikimedia.org/wikipedia/commons/c/cb/Broadway_tower_edit.jpg"</span>, <span class="s2">"test.jpg"</span><span class="o">)</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div align="center">
+   <img src="/assets/img/seam_carving/1.png" align="center" />
+</div>
+
+<p>Use Sobel filters to compute the gradient of the image.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_energy<span class="o">(</span>img<span class="o">)</span>
+	∇y <span class="o">=</span> luminance.<span class="o">(</span>imfilter<span class="o">(</span>img, Kernel.sobel<span class="o">()[</span>1]<span class="o">))</span>
+	∇x <span class="o">=</span> luminance.<span class="o">(</span>imfilter<span class="o">(</span>img, Kernel.sobel<span class="o">()[</span>2]<span class="o">))</span>
+	energy <span class="o">=</span> sqrt.<span class="o">(</span>∇x.^2 + ∇y.^2<span class="o">)</span>
+end<span class="p">;</span>
+</code></pre></div></div>
+<div align="center">
+   <img src="/assets/img/seam_carving/2.png" align="center" />
+</div>
+
+<p>Next, the algorithm uses dynamic programming to find the vertical seam line with the least energy.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_min_cost<span class="o">(</span>energy<span class="o">)</span>
+	min_cost <span class="o">=</span> copy<span class="o">(</span>energy<span class="o">)</span><span class="p">;</span>	
+	h, w <span class="o">=</span> size<span class="o">(</span>energy<span class="o">)</span>
+	<span class="k">for </span>i <span class="k">in </span>h-1:-1:1, j <span class="k">in </span>1:w
+		<span class="k">if </span>j <span class="o">==</span> 1
+			min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,1:2]<span class="o">)</span>
+		elseif j <span class="o">==</span> w
+			min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,w-1:w]<span class="o">)</span>
+		<span class="k">else
+			</span>min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,j-1:j+1]<span class="o">)</span>
+		end
+	end
+	<span class="k">return </span>min_cost
+end<span class="p">;</span>
+</code></pre></div></div>
+<p>Next, we use the precomputed values to find the required seam line by traversing down from the minima on the top row. At each step, choose the neighbor with the least cost.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_seam<span class="o">(</span>min_cost<span class="o">)</span>
+	h,w <span class="o">=</span> size<span class="o">(</span>min_cost<span class="o">)</span>
+	min_idx <span class="o">=</span> argmin<span class="o">(</span>min_cost[1,:]<span class="o">)</span>
+	indices <span class="o">=</span> <span class="o">[</span>min_idx]
+	<span class="k">for </span>i <span class="k">in </span>2:h
+		<span class="k">if </span><span class="nv">min_idx</span><span class="o">==</span>1
+			min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,1:2]<span class="o">)</span> - 1
+		elseif <span class="nv">min_idx</span><span class="o">==</span>w
+			min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,w-1:w]<span class="o">)</span> - 2
+		<span class="k">else
+			</span>min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,min_idx-1:min_idx+1]<span class="o">)</span> - 2
+		end
+		push!<span class="o">(</span>indices, min_idx<span class="o">)</span>
+	end
+	<span class="k">return </span>indices
+end<span class="p">;</span>
+</code></pre></div></div>
+<div align="center">
+   <img src="/assets/img/seam_carving/3.png" align="center" />
+</div>
+
+<p>The cost function has triangular artifacts as expected since a high energy value would propagate up in such contours.</p>
+
+<p>Now we remove the seam pixels and ‘stick’ the parts.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>cut_seam<span class="o">(</span>img, seam<span class="o">)</span>
+	new_img <span class="o">=</span> img[:,1:end-1]
+	<span class="k">for </span>i <span class="k">in </span>1:size<span class="o">(</span>img<span class="o">)[</span>1]
+		j <span class="o">=</span> seam[i]
+		new_img[i,j:end] <span class="o">=</span> img[i,j+1:end]
+	end
+	new_img
+end<span class="p">;</span>
+</code></pre></div></div>
+<p>Finally, we can achieve resizing by just repeating the above steps iteratively.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>shrink_width<span class="o">(</span>img, n<span class="o">)</span>
+	new_img <span class="o">=</span> copy<span class="o">(</span>img<span class="o">)</span>
+	<span class="k">for </span>i <span class="k">in </span>1:n
+		E <span class="o">=</span> get_energy<span class="o">(</span>new_img<span class="o">)</span>
+		cost <span class="o">=</span> get_min_cost<span class="o">(</span>E<span class="o">)</span>
+		seam <span class="o">=</span> get_seam<span class="o">(</span>cost<span class="o">)</span>
+		new_img <span class="o">=</span> cut_seam<span class="o">(</span>new_img, seam<span class="o">)</span>
+	end
+	new_img
+end<span class="p">;</span>
+
+new_img <span class="o">=</span> shrink_width<span class="o">(</span>img, 200<span class="o">)</span>
+</code></pre></div></div>
+
+<div align="center">
+   <img src="/assets/img/seam_carving/4.png" align="center" />
+</div>
+
+<p>The results speak for themselves! I would be updating this post soon with detailed descriptions of intermediate steps.</p>
 
     
 
@@ -264,14 +349,36 @@
 <div class="post-tags">
   
     
-    <a href="/tags.html#javascript-game">
+    <a href="/tags.html#image-processing">
     
       <span class="icon">
         <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
-      </span>&nbsp;<span class="tag-name">javascript, game</span>
+      </span>&nbsp;<span class="tag-name">image-processing,</span>
+    </a>
+  
+    
+    <a href="/tags.html#julia">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">julia,</span>
+    </a>
+  
+    
+    <a href="/tags.html#dynamic-programming">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">dynamic-programming</span>
     </a>
   
 </div>
@@ -295,9 +402,9 @@
   *  https://disqus.com/admin/universalcode/#configuration-variables
   */
   var disqus_config = function () {
-    this.page.url = "http://localhost:4000/flappy.html";
+    this.page.url = "http://localhost:4000/2021/02/01/seam-carving.html";
     this.page.identifier = "" ||
-                           "http://localhost:4000/flappy.html";
+                           "http://localhost:4000/2021/02/01/seam-carving.html";
   }
   function loadDisqusComments() { // DON'T EDIT BELOW THIS LINE
     var d = document, s = d.createElement('script');
@@ -318,6 +425,33 @@
   <section class="related">
   <h2>Related Posts</h2>
   <ul class="posts-list">
+    
+      <li>
+        <h3>
+          <a href="/2020/06/22/trig-writeup.html">
+            CsecCTF IITB Writeup: I hate Assembly
+            <small>22 Jun 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2020/04/20/mrf_denoising.html">
+            Image Denoising with Markov Random Fields
+            <small>20 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2020/03/14/harris-corner.html">
+            Harris Corner Detection in Python
+            <small>14 Mar 2020</small>
+          </a>
+        </h3>
+      </li>
     
   </ul>
 </section>
