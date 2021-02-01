@@ -247,9 +247,9 @@
   <div class="post-body">
     <p>I am going to implement the basic <strong>Seam Carving</strong> algorithm in <strong>Julia</strong>. This method shows the usefulness of dynamic programming.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code>using Images, ImageFiltering
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">using</span> <span class="n">Images</span><span class="x">,</span> <span class="n">ImageFiltering</span>
 
-download<span class="o">(</span><span class="s2">"https://upload.wikimedia.org/wikipedia/commons/c/cb/Broadway_tower_edit.jpg"</span>, <span class="s2">"test.jpg"</span><span class="o">)</span><span class="p">;</span>
+<span class="n">download</span><span class="x">(</span><span class="s">"https://upload.wikimedia.org/wikipedia/commons/c/cb/Broadway_tower_edit.jpg"</span><span class="x">,</span> <span class="s">"test.jpg"</span><span class="x">);</span>
 </code></pre></div></div>
 
 <div align="center">
@@ -257,51 +257,57 @@ download<span class="o">(</span><span class="s2">"https://upload.wikimedia.org/w
 </div>
 
 <p>Use Sobel filters to compute the gradient of the image.</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_energy<span class="o">(</span>img<span class="o">)</span>
-	∇y <span class="o">=</span> luminance.<span class="o">(</span>imfilter<span class="o">(</span>img, Kernel.sobel<span class="o">()[</span>1]<span class="o">))</span>
-	∇x <span class="o">=</span> luminance.<span class="o">(</span>imfilter<span class="o">(</span>img, Kernel.sobel<span class="o">()[</span>2]<span class="o">))</span>
-	energy <span class="o">=</span> sqrt.<span class="o">(</span>∇x.^2 + ∇y.^2<span class="o">)</span>
-end<span class="p">;</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_energy</span><span class="x">(</span><span class="n">img</span><span class="x">)</span>
+	<span class="n">∇y</span> <span class="o">=</span> <span class="n">luminance</span><span class="o">.</span><span class="x">(</span><span class="n">imfilter</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">Kernel</span><span class="o">.</span><span class="n">sobel</span><span class="x">()[</span><span class="mi">1</span><span class="x">]))</span>
+	<span class="n">∇x</span> <span class="o">=</span> <span class="n">luminance</span><span class="o">.</span><span class="x">(</span><span class="n">imfilter</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">Kernel</span><span class="o">.</span><span class="n">sobel</span><span class="x">()[</span><span class="mi">2</span><span class="x">]))</span>
+	<span class="n">energy</span> <span class="o">=</span> <span class="n">sqrt</span><span class="o">.</span><span class="x">(</span><span class="n">∇x</span><span class="o">.^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">∇y</span><span class="o">.^</span><span class="mi">2</span><span class="x">)</span>
+<span class="k">end</span><span class="x">;</span>
 </code></pre></div></div>
 <div align="center">
    <img src="/assets/img/seam_carving/2.png" align="center" />
 </div>
 
-<p>Next, the algorithm uses dynamic programming to find the vertical seam line with the least energy.</p>
+<p>The key idea is that the value of gradient at any pixel corresponds to how ‘valuable’ or ‘important’ to image the object is. This turns out to be a surprisingly good idea for most natural images.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_min_cost<span class="o">(</span>energy<span class="o">)</span>
-	min_cost <span class="o">=</span> copy<span class="o">(</span>energy<span class="o">)</span><span class="p">;</span>	
-	h, w <span class="o">=</span> size<span class="o">(</span>energy<span class="o">)</span>
-	<span class="k">for </span>i <span class="k">in </span>h-1:-1:1, j <span class="k">in </span>1:w
-		<span class="k">if </span>j <span class="o">==</span> 1
-			min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,1:2]<span class="o">)</span>
-		elseif j <span class="o">==</span> w
-			min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,w-1:w]<span class="o">)</span>
-		<span class="k">else
-			</span>min_cost[i,j] +<span class="o">=</span> minimum<span class="o">(</span>min_cost[i+1,j-1:j+1]<span class="o">)</span>
-		end
-	end
-	<span class="k">return </span>min_cost
-end<span class="p">;</span>
+<p>To shrink the width by 1 pixel, we find a set of connected pixels (one in each row) such that the sum of their gradients or ‘energy’ as the authors of the paper called it, is minimized. Such a set is called a <strong>seam</strong>.</p>
+
+<p>The least energy seam can be found in <script type="math/tex">\mathcal{O}(HW)</script> time for an <script type="math/tex">H\times W</script> resolution image given its gradients. The algorithm uses dynamic programming to achieve this. Starting from the bottom row, we can use the following recursion to compute the minimum possible energy for a seam originating at each pixel and going down. If <script type="math/tex">E(x,y)</script> represents this value at pixel <script type="math/tex">(x,y)</script>, then</p>
+
+<script type="math/tex; mode=display">M(x,y) = \min \{M(x-1,y-1),M(x,y-1),M(x+1,y-1)\}</script>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_min_cost</span><span class="x">(</span><span class="n">energy</span><span class="x">)</span>
+	<span class="n">min_cost</span> <span class="o">=</span> <span class="n">copy</span><span class="x">(</span><span class="n">energy</span><span class="x">);</span>	
+	<span class="n">h</span><span class="x">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">size</span><span class="x">(</span><span class="n">energy</span><span class="x">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="x">,</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">w</span>
+		<span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="x">])</span>
+		<span class="k">elseif</span> <span class="n">j</span> <span class="o">==</span> <span class="n">w</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">w</span><span class="x">])</span>
+		<span class="k">else</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="x">])</span>
+		<span class="k">end</span>
+	<span class="k">end</span>
+	<span class="k">return</span> <span class="n">min_cost</span>
+<span class="k">end</span><span class="x">;</span>
 </code></pre></div></div>
 <p>Next, we use the precomputed values to find the required seam line by traversing down from the minima on the top row. At each step, choose the neighbor with the least cost.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>get_seam<span class="o">(</span>min_cost<span class="o">)</span>
-	h,w <span class="o">=</span> size<span class="o">(</span>min_cost<span class="o">)</span>
-	min_idx <span class="o">=</span> argmin<span class="o">(</span>min_cost[1,:]<span class="o">)</span>
-	indices <span class="o">=</span> <span class="o">[</span>min_idx]
-	<span class="k">for </span>i <span class="k">in </span>2:h
-		<span class="k">if </span><span class="nv">min_idx</span><span class="o">==</span>1
-			min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,1:2]<span class="o">)</span> - 1
-		elseif <span class="nv">min_idx</span><span class="o">==</span>w
-			min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,w-1:w]<span class="o">)</span> - 2
-		<span class="k">else
-			</span>min_idx +<span class="o">=</span> argmin<span class="o">(</span>min_cost[i,min_idx-1:min_idx+1]<span class="o">)</span> - 2
-		end
-		push!<span class="o">(</span>indices, min_idx<span class="o">)</span>
-	end
-	<span class="k">return </span>indices
-end<span class="p">;</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_seam</span><span class="x">(</span><span class="n">min_cost</span><span class="x">)</span>
+	<span class="n">h</span><span class="x">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">size</span><span class="x">(</span><span class="n">min_cost</span><span class="x">)</span>
+	<span class="n">min_idx</span> <span class="o">=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="mi">1</span><span class="x">,</span><span class="o">:</span><span class="x">])</span>
+	<span class="n">indices</span> <span class="o">=</span> <span class="x">[</span><span class="n">min_idx</span><span class="x">]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">h</span>
+		<span class="k">if</span> <span class="n">min_idx</span><span class="o">==</span><span class="mi">1</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="x">])</span> <span class="o">-</span> <span class="mi">1</span>
+		<span class="k">elseif</span> <span class="n">min_idx</span><span class="o">==</span><span class="n">w</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">w</span><span class="x">])</span> <span class="o">-</span> <span class="mi">2</span>
+		<span class="k">else</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">min_idx</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">min_idx</span><span class="o">+</span><span class="mi">1</span><span class="x">])</span> <span class="o">-</span> <span class="mi">2</span>
+		<span class="k">end</span>
+		<span class="n">push!</span><span class="x">(</span><span class="n">indices</span><span class="x">,</span> <span class="n">min_idx</span><span class="x">)</span>
+	<span class="k">end</span>
+	<span class="k">return</span> <span class="n">indices</span>
+<span class="k">end</span><span class="x">;</span>
 </code></pre></div></div>
 <div align="center">
    <img src="/assets/img/seam_carving/3.png" align="center" />
@@ -311,33 +317,34 @@ end<span class="p">;</span>
 
 <p>Now we remove the seam pixels and ‘stick’ the parts.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>cut_seam<span class="o">(</span>img, seam<span class="o">)</span>
-	new_img <span class="o">=</span> img[:,1:end-1]
-	<span class="k">for </span>i <span class="k">in </span>1:size<span class="o">(</span>img<span class="o">)[</span>1]
-		j <span class="o">=</span> seam[i]
-		new_img[i,j:end] <span class="o">=</span> img[i,j+1:end]
-	end
-	new_img
-end<span class="p">;</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> cut_seam</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">seam</span><span class="x">)</span>
+	<span class="n">new_img</span> <span class="o">=</span> <span class="n">img</span><span class="x">[</span><span class="o">:</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="x">]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="x">(</span><span class="n">img</span><span class="x">)[</span><span class="mi">1</span><span class="x">]</span>
+		<span class="n">j</span> <span class="o">=</span> <span class="n">seam</span><span class="x">[</span><span class="n">i</span><span class="x">]</span>
+		<span class="n">new_img</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="o">:</span><span class="k">end</span><span class="x">]</span> <span class="o">=</span> <span class="n">img</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="x">]</span>
+	<span class="k">end</span>
+	<span class="n">new_img</span>
+<span class="k">end</span><span class="x">;</span>
 </code></pre></div></div>
 <p>Finally, we can achieve resizing by just repeating the above steps iteratively.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function </span>shrink_width<span class="o">(</span>img, n<span class="o">)</span>
-	new_img <span class="o">=</span> copy<span class="o">(</span>img<span class="o">)</span>
-	<span class="k">for </span>i <span class="k">in </span>1:n
-		E <span class="o">=</span> get_energy<span class="o">(</span>new_img<span class="o">)</span>
-		cost <span class="o">=</span> get_min_cost<span class="o">(</span>E<span class="o">)</span>
-		seam <span class="o">=</span> get_seam<span class="o">(</span>cost<span class="o">)</span>
-		new_img <span class="o">=</span> cut_seam<span class="o">(</span>new_img, seam<span class="o">)</span>
-	end
-	new_img
-end<span class="p">;</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> shrink_width</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">n</span><span class="x">)</span>
+	<span class="n">new_img</span> <span class="o">=</span> <span class="n">copy</span><span class="x">(</span><span class="n">img</span><span class="x">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+		<span class="n">E</span> <span class="o">=</span> <span class="n">get_energy</span><span class="x">(</span><span class="n">new_img</span><span class="x">)</span>
+		<span class="n">cost</span> <span class="o">=</span> <span class="n">get_min_cost</span><span class="x">(</span><span class="n">E</span><span class="x">)</span>
+		<span class="n">seam</span> <span class="o">=</span> <span class="n">get_seam</span><span class="x">(</span><span class="n">cost</span><span class="x">)</span>
+		<span class="n">new_img</span> <span class="o">=</span> <span class="n">cut_seam</span><span class="x">(</span><span class="n">new_img</span><span class="x">,</span> <span class="n">seam</span><span class="x">)</span>
+	<span class="k">end</span>
+	<span class="n">new_img</span>
+<span class="k">end</span><span class="x">;</span>
 
-new_img <span class="o">=</span> shrink_width<span class="o">(</span>img, 200<span class="o">)</span>
+<span class="n">new_img</span> <span class="o">=</span> <span class="n">shrink_width</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="mi">400</span><span class="x">)</span>
 </code></pre></div></div>
 
 <div align="center">
-   <img src="/assets/img/seam_carving/4.png" align="center" />
+   <img src="/assets/img/seam_carving/1.png" width="700" />
+   <img src="/assets/img/seam_carving/4.png" width="700" />
 </div>
 
 <p>The results speak for themselves! I would be updating this post soon with detailed descriptions of intermediate steps.</p>
