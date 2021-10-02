@@ -157,7 +157,7 @@
 
 
   <!-- Optional additional links to insert in sidebar nav -->
-<a class="page-link" href="./Resume.pdf">Resume</a>
+<a class="page-link" href="/Resume.pdf">Resume</a>
 </nav>
 
   <nav id="sidebar-icon-links">
@@ -343,9 +343,9 @@ cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagl
 
 <p>We’ll explore a different route. We noticed that output stops changing when length of input argument exceeds 32 characters. Also, shifting the argument by a factor of 4 seems to shift some output chars in the opposite direction.</p>
 
-<p>With some trials, we figure out that, an input string <code class="language-html highlighter-rouge">ABCDEFGH</code> (A, B, . . represent a block of 4 characters) is mapped to <code class="language-html highlighter-rouge">f(H)f(G)f(F)f(E)f(C)f(B)f(A)p(D)</code>. Here, <script type="math/tex">f(X) \neq  p(X)</script> and output of both is 12 characters in length.</p>
+<p>With some trials, we figure out that, an input string <code class="language-html highlighter-rouge">ABCDEFGH</code> (A, B, . . represent a block of 4 characters) is mapped to <code class="language-html highlighter-rouge">f(H)f(G)f(F)f(E)f(C)f(B)f(A)p(D)</code>. Here, \(f(X) \neq  p(X)\) and output of both is 12 characters in length.</p>
 
-<p>This leads us to the conclusion that if we can just find out the mappings <script type="math/tex">f, p</script> and invert them, we get the flag.</p>
+<p>This leads us to the conclusion that if we can just find out the mappings \(f, p\) and invert them, we get the flag.</p>
 
 <h2 id="brute-force-attack-">Brute Force Attack :)</h2>
 
@@ -361,7 +361,7 @@ cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagl
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">charset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+                    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">charset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
 
 </code></pre></div></div>
 
@@ -426,22 +426,22 @@ Template: ggggffffeeeexxxxddddccccbbbbaaaa
 
 <span class="n">lines</span> <span class="o">=</span> <span class="mi">2792177</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'words.txt'</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">readlines</span><span class="p">()</span>
 
 <span class="n">lookup</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'outputs.txt'</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">12</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="mi">12</span><span class="o">+</span><span class="mi">12</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
                 <span class="n">lookup</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">7</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="n">i</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">7</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">s</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="mi">7</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
 
 <span class="n">flag</span> <span class="o">=</span> <span class="s">''</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lookup</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">flag</span> <span class="o">+=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 <span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
@@ -452,7 +452,7 @@ Template: ggggffffeeeexxxxddddccccbbbbaaaa
 CsecIITB<span class="o">{</span>H0pu_l34rn3d_R1ght<span class="o">}</span>
 </code></pre></div></div>
 
-<p>But, this is not the flag. That’s because we only found the mapping <script type="math/tex">f</script>. Finding <script type="math/tex">p</script> would have taken 7 times longer. We know we are missing a 4-char block, we know the position too. We can make some educated guesses for the missing block, it’s not that hard.</p>
+<p>But, this is not the flag. That’s because we only found the mapping \(f\). Finding \(p\) would have taken 7 times longer. We know we are missing a 4-char block, we know the position too. We can make some educated guesses for the missing block, it’s not that hard.</p>
 
 <h2 id="flag">Flag</h2>
 

@@ -157,7 +157,7 @@
 
 
   <!-- Optional additional links to insert in sidebar nav -->
-<a class="page-link" href="./Resume.pdf">Resume</a>
+<a class="page-link" href="/Resume.pdf">Resume</a>
 </nav>
 
   <nav id="sidebar-icon-links">
@@ -253,12 +253,12 @@
 </div>
 
 <h2 id="algorithm">Algorithm</h2>
-<p>We’ll be using a quadratic MRF prior <script type="math/tex">g</script> to penalize the difference between neighbouring pixel intensities. 
+<p>We’ll be using a quadratic MRF prior \(g\) to penalize the difference between neighbouring pixel intensities. 
 \begin{align}
     g(u) = |u|^2
 \end{align}</p>
 
-<p>We will start from a blank image a update its values via gradient descent to minimize our objective <script type="math/tex">f</script>. Here <script type="math/tex">x_{i_1},x_{i_2},x_{i_3},x_{i_4}</script> are surrounding pixels of <script type="math/tex">{x_i}</script>.</p>
+<p>We will start from a blank image a update its values via gradient descent to minimize our objective \(f\). Here \(x_{i_1},x_{i_2},x_{i_3},x_{i_4}\) are surrounding pixels of \({x_i}\).</p>
 
 <p>\begin{align}
     f(x, y) = \sum_{i} [ a(x_i-y_i)^2 + \sum_{n=1}^{4} g(x_i-x_{i_n})]
@@ -298,21 +298,21 @@
     <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="k">def</span> <span class="nf">mrf_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-    <span class="n">loss1</span> <span class="o">=</span> <span class="p">((</span><span class="n">noisy</span> <span class="o">-</span> <span class="n">X</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span>
+    <span class="n">loss1</span> <span class="o">=</span> <span class="p">((</span><span class="n">noisy</span> <span class="o">-</span> <span class="n">X</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="nb">sum</span><span class="p">()</span>
     <span class="n">loss2</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">loss2</span> <span class="o">+=</span> <span class="n">mrf_prior</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span> <span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span>
-    <span class="n">loss2</span> <span class="o">+=</span> <span class="n">mrf_prior</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:])</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span>
+    <span class="n">loss2</span> <span class="o">+=</span> <span class="n">mrf_prior</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span> <span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]).</span><span class="nb">sum</span><span class="p">()</span>
+    <span class="n">loss2</span> <span class="o">+=</span> <span class="n">mrf_prior</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]).</span><span class="nb">sum</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">loss1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">loss2</span>
 </code></pre></div></div>
 
 <p>We’ll start with a completely black image.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="n">to_tensor</span> <span class="o">=</span> <span class="n">ToTensor</span><span class="p">()</span>
-<span class="n">RRMSE</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(((</span><span class="n">gt</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">gt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">sum</span><span class="p">())</span><span class="o">**</span><span class="mf">0.5</span>
-<span class="n">noisy</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noise_level_high.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="n">gt</span>    <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noiseless.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">noisy</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="n">X</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">RRMSE</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(((</span><span class="n">gt</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">gt</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="nb">sum</span><span class="p">())</span><span class="o">**</span><span class="mf">0.5</span>
+<span class="n">noisy</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noise_level_high.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">].</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">gt</span>    <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'mri_image_noiseless.png'</span><span class="p">))[</span><span class="mi">0</span><span class="p">].</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">noisy</span><span class="p">).</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">X</span><span class="p">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="bp">True</span>
 <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
@@ -323,13 +323,13 @@
 <p>Writing the optimization loop.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_it</span><span class="p">):</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">()</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">mrf_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RRMSE</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-    <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">X</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+    <span class="n">loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="p">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">errors</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">RRMSE</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="n">losses</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">images</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">X</span><span class="p">.</span><span class="n">clone</span><span class="p">().</span><span class="n">detach</span><span class="p">()).</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">uint8</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>The last line just stores our image as a numpy array in a lost so we can convert it to a GIF using <code class="language-html highlighter-rouge">imageio</code> library.</p>

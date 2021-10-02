@@ -157,7 +157,7 @@
 
 
   <!-- Optional additional links to insert in sidebar nav -->
-<a class="page-link" href="./Resume.pdf">Resume</a>
+<a class="page-link" href="/Resume.pdf">Resume</a>
 </nav>
 
   <nav id="sidebar-icon-links">
@@ -259,49 +259,49 @@
 <p>The full project code is available at <a href="https://github.com/safwankdb/Harris-Corner-Python">GitHub</a>.</p>
 
 <h3 id="image-derivatives">Image Derivatives</h3>
-<p>We’ve used Sobel operators of aperture 3 to compute <script type="math/tex">I_x</script> and <script type="math/tex">I_y</script> . Since the Sobel operators are seperable filters (have rank 1), we have used the optimised algorithm for calculating the derivatives. We define the following function to filter an image $I$ with a seperable filter whose factors are filter_y<script type="math/tex">_{(1×3)}</script> and filter_x<script type="math/tex">_{(3×1)}</script></p>
+<p>We’ve used Sobel operators of aperture 3 to compute \(I_x\) and \(I_y\) . Since the Sobel operators are seperable filters (have rank 1), we have used the optimised algorithm for calculating the derivatives. We define the following function to filter an image $I$ with a seperable filter whose factors are filter_y\(_{(1×3)}\) and filter_x\(_{(3×1)}\)</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">seperable_conv</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">filter_x</span><span class="p">,</span> <span class="n">filter_y</span><span class="p">):</span>
-    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">filter_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span>
-    <span class="n">I_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">I_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="p">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">filter_x</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">I_a</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">I_b</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="o">-</span><span class="n">n</span><span class="p">):</span>
         <span class="n">patch</span> <span class="o">=</span> <span class="n">I</span><span class="p">[:,</span> <span class="n">x</span><span class="o">-</span><span class="n">n</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">I_a</span><span class="p">[:,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch</span> <span class="o">*</span> <span class="n">filter_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">filter_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">filter_y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">I_a</span><span class="p">[:,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch</span> <span class="o">*</span> <span class="n">filter_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">filter_y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">filter_y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="n">n</span><span class="p">):</span>
         <span class="n">patch</span> <span class="o">=</span> <span class="n">I_a</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="n">n</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">I_b</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch</span> <span class="o">*</span> <span class="n">filter_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">I_b</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch</span> <span class="o">*</span> <span class="n">filter_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">I_b</span>
 </code></pre></div></div>
 
-<p>Now, for Sobel derivatives, we just take the filters as <script type="math/tex">[−1, 0, 1] , [1, 2, 1]^T</script> and vice-versa.</p>
+<p>Now, for Sobel derivatives, we just take the filters as \([−1, 0, 1] , [1, 2, 1]^T\) and vice-versa.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">sobel_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">sobel_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">I</span><span class="p">.</span><span class="n">shape</span>
+    <span class="n">sobel_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">sobel_2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">I_x</span> <span class="o">=</span> <span class="n">seperable_conv</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">sobel_1</span><span class="p">,</span> <span class="n">sobel_2</span><span class="p">)</span>
     <span class="n">I_y</span> <span class="o">=</span> <span class="n">seperable_conv</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">sobel_2</span><span class="p">,</span> <span class="n">sobel_1</span><span class="p">)</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
 </code></pre></div></div>
 <p>We now apply gaussian blur to smoothen the image. Since gaussian filter is  also seperable, we take advantage of this fact and use the above function.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">gaussian_mask</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.8</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">kernel</span>
 
 <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
     <span class="n">g_kernel</span> <span class="o">=</span> <span class="n">gaussian_mask</span><span class="p">(</span><span class="n">n_g</span><span class="p">)</span>
     <span class="n">I_x</span> <span class="o">=</span> <span class="n">seperable_conv</span><span class="p">(</span><span class="n">I_x</span><span class="p">,</span> <span class="n">g_kernel</span><span class="p">,</span> <span class="n">g_kernel</span><span class="p">)</span>
     <span class="n">I_y</span> <span class="o">=</span> <span class="n">seperable_conv</span><span class="p">(</span><span class="n">I_y</span><span class="p">,</span> <span class="n">g_kernel</span><span class="p">,</span> <span class="n">g_kernel</span><span class="p">)</span>
-    <span class="n">D_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="o">...</span>
+    <span class="n">D_temp</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="p">...</span>
 </code></pre></div></div>
 <p><img src="/assets/img/harris/1.png" alt="Derivatives" /></p>
 
@@ -311,22 +311,22 @@
     \left.A = \sum_{u}\sum_{v}w(u,v)\begin{bmatrix} I_x^2 &amp; I_xI_y \\I_xI_y &amp; I_y^2\end{bmatrix} \right |_{u,v}
 \end{align}</p>
 
-<p>Using the smoothened derivatives <script type="math/tex">I_x, I_y</script>, we calculate the structure tensor <script type="math/tex">A</script> at every pixel.</p>
+<p>Using the smoothened derivatives \(I_x, I_y\), we calculate the structure tensor \(A\) at every pixel.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="o">...</span>
-    <span class="n">D_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">I_x</span><span class="p">)</span>
+    <span class="p">...</span>
+    <span class="n">D_temp</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">I_x</span><span class="p">)</span>
     <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">I_x</span><span class="o">*</span><span class="n">I_y</span>
     <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">I_y</span><span class="p">)</span>
+    <span class="n">D_temp</span><span class="p">[:,:,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">I_y</span><span class="p">)</span>
     <span class="n">g_filter</span> <span class="o">=</span> <span class="n">gaussian_mask</span><span class="p">(</span><span class="n">n_w</span><span class="p">)</span>
-    <span class="n">g_filter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">g_filter</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_w</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">g_filter</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">g_filter</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_w</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">seperable_conv</span><span class="p">(</span><span class="n">D_temp</span><span class="p">,</span> <span class="n">g_filter</span><span class="p">,</span> <span class="n">g_filter</span><span class="p">)</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
 </code></pre></div></div>
 <h3 id="eigenvalues">Eigenvalues</h3>
-<p>Since A is a <script type="math/tex">2×2</script> matrix. It’s eigenvalues have a closed form solution.<br />
+<p>Since A is a \(2×2\) matrix. It’s eigenvalues have a closed form solution.<br />
 Let,</p>
 
 <p>\begin{align}
@@ -340,20 +340,20 @@ Let,</p>
 \end{align}</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">n_g</span><span class="p">,</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">Q</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">T1</span> <span class="o">=</span> <span class="p">(</span><span class="n">P</span><span class="o">+</span><span class="n">R</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-    <span class="n">T2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">R</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">T2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">R</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
     <span class="n">L_1</span> <span class="o">=</span> <span class="n">T1</span><span class="o">-</span><span class="n">T2</span>
     <span class="n">L_2</span> <span class="o">=</span> <span class="n">T1</span><span class="o">+</span><span class="n">T2</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
 </code></pre></div></div>
 <p><img src="/assets/img/harris/2.png" alt="" /></p>
 <h3 id="cornerness-measure">Cornerness Measure</h3>
 
-<p>Cornerness measure <script type="math/tex">C</script> was calculated and thresholded at <script type="math/tex">0.457</script> (found emperically).</p>
+<p>Cornerness measure \(C\) was calculated and thresholded at \(0.457\) (found emperically).</p>
 
 <p>\begin{align}
     C = \lambda_1\lambda_2-k(\lambda_1+\lambda_2)^2
